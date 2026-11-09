@@ -154,8 +154,8 @@ def _valid_exchange_code(exchange: str, base: str, digit_lens: tuple[int, ...]) 
     # Taiwan actively managed ETFs end with a letter, e.g. 00993A.TW:
     # 4-5 digits + 1 letter. TW/TWO only; every other market stays digits-only.
     if exchange in {"TW", "TWO"} and len(base) in (5, 6) and base[:-1].isdigit() and base[-1].isalpha():
-            return True
-        if not (base.isdigit() and len(base) in digit_lens):
+        return True
+    if not (base.isdigit() and len(base) in digit_lens):
         return False
     if exchange in {"SH", "SS"}:
         return _infer_cn_exchange(base) == "SH"
