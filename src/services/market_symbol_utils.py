@@ -50,12 +50,12 @@ def split_suffix_symbol(stock_code: str) -> tuple[str, str] | None:
 
 
 def _is_tw_active_etf_base(base: str) -> bool:
-        """Return whether a Taiwan base is an actively managed ETF code.
+    """Return whether a Taiwan base is an actively managed ETF code.
 
-        TWSE assigns codes ending in a letter (``A``) to actively managed ETFs
-        to tell them apart from passive index ETFs, so the base is 4-5 digits
-        followed by one letter (e.g. ``00993A``).
-        """
+    TWSE assigns codes ending in a letter (``A``) to actively managed ETFs
+    to tell them apart from passive index ETFs, so the base is 4-5 digits
+    followed by one letter (e.g. ``00993A``).
+    """
 
     return len(base) in (5, 6) and base[:-1].isdigit() and base[-1].isalpha()
 
@@ -71,8 +71,8 @@ def get_suffix_market(stock_code: str) -> Optional[str]:
     if spec is None:
         return None
     # Taiwan actively managed ETFs end with a letter, e.g. 00993A.TW:
-        # 4-5 digits + 1 letter. TW/TWO only; JP/KR stay digits-only.
-        if not (base.isdigit() and len(base) in spec.digit_lengths) and not (spec.market == "tw" and _is_tw_active_etf_base(base)):
+    # 4-5 digits + 1 letter. TW/TWO only; JP/KR stay digits-only.
+    if not (base.isdigit() and len(base) in spec.digit_lengths) and not (spec.market == "tw" and _is_tw_active_etf_base(base)):
         return None
     return spec.market
 
