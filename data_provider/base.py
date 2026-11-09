@@ -90,7 +90,7 @@ def normalize_stock_code(stock_code: str) -> str:
     - '7203.T'      -> '7203.T'   (keep Japan Yahoo suffix form)
     - '005930.KS'   -> '005930.KS' (keep Korea Yahoo suffix form)
     - '2330.TW'     -> '2330.TW'  (keep Taiwan TWSE Yahoo suffix form)
-    - '00993A.TW' -> '00993A.TW' (keep Taiwan actively managed ETF Yahoo suffix form)
+    - '00993A.TW'   -> '00993A.TW'  (keep Taiwan actively managed ETF Yahoo suffix form)
     - '6505.TWO'    -> '6505.TWO' (keep Taiwan TPEx Yahoo suffix form)
     - 'AAPL'        -> 'AAPL'     (keep US stock ticker as-is)
 
