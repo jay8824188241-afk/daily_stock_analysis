@@ -21,6 +21,20 @@ def test_suffix_market_detection_covers_supported_yahoo_markets() -> None:
     assert normalize_suffix_market_symbol("005930.ks") == "005930.KS"
 
 
+def test_suffix_market_detection_accepts_taiwan_active_etf_letter_codes() -> None:
+        # Taiwan actively managed ETFs end with a letter (e.g. 00993A.TW).
+    assert get_suffix_market("00993A.tw") == "tw"
+    assert get_suffix_market("00981a.TW") == "tw"
+    assert is_suffix_market_symbol("00992A.TW", "tw") is True
+    assert normalize_suffix_market_symbol("00993a.tw") == "00993A.TW"
+    # JP/KR stay digits-only; TW still rejects non-numeric bases.
+assert get_suffix_market("00993A.T") is None
+assert get_suffix_market("00993A.KS") is None
+assert get_suffix_market("ABC.TW") is None
+assert get_suffix_market("00993AB.TW") is None
+assert suffix_base_lookup_allowed("00993A.TW") is False
+
+
 def test_suffix_market_detection_rejects_ambiguous_or_invalid_bare_codes() -> None:
     assert get_suffix_market("005930") is None
     assert get_suffix_market("2330") is None
