@@ -89,8 +89,9 @@ class YfinanceFetcher(BaseFetcher):
     def _is_tw_suffix_stock(stock_code: str) -> bool:
         """Return True for supported Taiwan suffix-only Yahoo symbols (TWSE `.TW` / TPEx `.TWO`).
 
-        Taiwan base codes are 4-6 digits (common stocks 4, ETFs/others up to 6,
-        e.g. 00878 / 006208), wider than the JP `.T` range.
+        Taiwan base codes are 4-6 digits (common stocks 4, ETFs/others up to 6, 
+        e.g. 00878 / 006208), wider than the JP `.T` range. Actively managed
+        ETFs end with a letter (e.g. 00993A).
         """
         return is_suffix_market_symbol(stock_code, "tw")
 
