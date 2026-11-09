@@ -55,7 +55,8 @@ _SUFFIX_DIGIT_LENS: dict = {
     ".T": (4, 5),
     ".KS": (6,),
     ".KQ": (6,),
-    # Taiwan: TWSE `.TW` and TPEx `.TWO`; base is 4-6 digits (ETFs up to 6).
+    # Taiwan: TWSE `.TW` and TPEx `.TWO`; base is 4-6 digits (ETFs up to 6),
+    # or 4-5 digits + 1 letter for actively managed ETFs (e.g. 00993A).
     # `.TWO` listed before `.TW` as a defensive ordering convention.
     ".TWO": (4, 5, 6),
     ".TW": (4, 5, 6),
@@ -150,7 +151,11 @@ def _is_us_index_code(code: str) -> bool:
 
 
 def _valid_exchange_code(exchange: str, base: str, digit_lens: tuple[int, ...]) -> bool:
-    if not (base.isdigit() and len(base) in digit_lens):
+    # Taiwan actively managed ETFs end with a letter, e.g. 00993A.TW:
+    # 4-5 digits + 1 letter. TW/TWO only; every other market stays digits-only.
+    if exchange in {"TW", "TWO"} and len(base) in (5, 6) and base[:-1].isdigit() and base[-1].isalpha():
+            return True
+        if not (base.isdigit() and len(base) in digit_lens):
         return False
     if exchange in {"SH", "SS"}:
         return _infer_cn_exchange(base) == "SH"

@@ -1022,6 +1022,24 @@ class TestExplicitExchangeSuffixRejections:
         assert target.unsupported_reason is not None
         assert expected_exchange in target.unsupported_reason
 
+    # ---- Taiwan actively managed ETFs end with a letter (e.g. 00993A.TW)
+#      and must parse as TW stocks, not as unsupported.
+@pytest.mark.parametrize(
+        "code",
+    [
+            "00993A.TW",
+        "00981A.TW",
+        "00403A.TW",
+        "00407A.TW",
+        "00992A.TW",
+    ],
+)
+def test_taiwan_active_etf_letter_code_is_supported(self, code: str) -> None:
+        target = parse_analysis_target(code)
+    assert target.asset_type == ParseStatus.STOCK
+assert target.exchange == "TW"
+assert target.canonical_id == code
+
 
 # ---------------------------------------------------------------------------
 # Index registry & CSI provider symbol governance.
