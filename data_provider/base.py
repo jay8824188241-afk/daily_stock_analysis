@@ -90,6 +90,7 @@ def normalize_stock_code(stock_code: str) -> str:
     - '7203.T'      -> '7203.T'   (keep Japan Yahoo suffix form)
     - '005930.KS'   -> '005930.KS' (keep Korea Yahoo suffix form)
     - '2330.TW'     -> '2330.TW'  (keep Taiwan TWSE Yahoo suffix form)
+    - '00993A.TW' -> '00993A.TW' (keep Taiwan actively managed ETF Yahoo suffix form)
     - '6505.TWO'    -> '6505.TWO' (keep Taiwan TPEx Yahoo suffix form)
     - 'AAPL'        -> 'AAPL'     (keep US stock ticker as-is)
 
@@ -138,8 +139,11 @@ def normalize_stock_code(stock_code: str) -> str:
             return f"{base}.{suffix.upper()}"
         if suffix.upper() in ('KS', 'KQ') and base.isdigit() and len(base) == 6:
             return f"{base}.{suffix.upper()}"
-        if suffix.upper() in ('TW', 'TWO') and base.isdigit() and 4 <= len(base) <= 6:
-            return f"{base}.{suffix.upper()}"
+            if suffix.upper() in ('TW', 'TWO') and 4 <= len(base) <= 6 and (
+                base.isdigit() or (base[:-1].isdigit() and base[-1].isalpha())
+            ):
+                # Actively managed Taiwan ETFs end with a letter (e.g. 00993A.TW).
+                return f"{base.upper()}.{suffix.upper()}"
         if suffix.upper() == 'HK' and base.isdigit() and 1 <= len(base) <= 5:
             return f"HK{base.zfill(5)}"
         if base.upper() in ('SH', 'SS', 'SZ', 'BJ') and suffix.isdigit():
@@ -195,7 +199,7 @@ def _is_kr_market(code: str) -> bool:
 def _is_tw_market(code: str) -> bool:
     """判定是否为台湾 Yahoo Finance suffix 代码（TWSE 上市 2330.TW / TPEx 上柜 6505.TWO）。
 
-    台股 base 为 4-6 位（普通股 4 位，ETF/其他至 6 位，如 00878 / 006208）。
+    台股 base 为 4-6 位（普通股 4 位，ETF/其他至 6 位，如 00878 / 006208），主动式 ETF 末尾带字母（如 00993A）。
     仅带 .TW/.TWO 后缀的代码才识别为台股，裸 6 位代码仍按 A 股语义处理。
     """
     return is_suffix_market_symbol(code, "tw")
